@@ -32,7 +32,7 @@ SELECT
   teamId,
   playerId,
   battingOrder
-FROM s_box_team_batting_order
+FROM stg_box_team_batting_order
 WHERE
   gamePk NOT IN (
     SELECT
@@ -75,7 +75,7 @@ INSERT INTO players(
       abbreviation,
       batSideCode batSide,
       pitchHandCode pitchHand
-    FROM s_people
+    FROM stg_people
   )
 SELECT
   playerId,
@@ -181,7 +181,7 @@ INSERT INTO game_player_batting_stats(
         CAST(intentionalWalks AS UNSIGNED),
         0
       ) unintentionalWalks
-    FROM s_box_player_batting
+    FROM stg_box_player_batting
     WHERE
       1 = 1
       AND (
@@ -287,7 +287,7 @@ INSERT INTO game_player_fielding_stats(
       COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
       COALESCE(CAST(putOuts AS UNSIGNED), 0) putOuts,
       COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases
-    FROM s_box_player_fielding
+    FROM stg_box_player_fielding
     WHERE
       1 = 1
       AND (
@@ -444,7 +444,7 @@ INSERT INTO game_player_pitching_stats(
         CAST(intentionalWalks AS UNSIGNED),
         0
       ) unintentionalWalks
-    FROM s_box_player_pitching
+    FROM stg_box_player_pitching
     WHERE
       1 = 1
       AND (
@@ -569,7 +569,7 @@ INSERT INTO game_batting_orders(
       teamId,
       playerId,
       battingOrder
-    FROM s_box_team_batting_order
+    FROM stg_box_team_batting_order
   )
 SELECT
   gamePk,
@@ -628,7 +628,7 @@ INSERT INTO teams(
       leagueName,
       venueId,
       venueName
-    FROM s_box_team
+    FROM stg_box_team
   )
 SELECT
   leagueId,
@@ -746,7 +746,7 @@ INSERT INTO atbats(
       batterSideCode batSide,
       pitcherHandCode pitchHand,
       description
-    FROM s_play_atbat
+    FROM stg_play_atbat
   )
 SELECT
   gamePk,
@@ -884,7 +884,7 @@ INSERT INTO pitches(
       location,
       coordX,
       coordY
-    FROM s_play_pitch
+    FROM stg_play_pitch
   )
 SELECT
   gamePk,
@@ -1023,7 +1023,7 @@ outBase,
 CAST(outNumber AS UNSIGNED) outNumber,
 earned,
 teamUnearned
-FROM s_play_runner
+FROM stg_play_runner
 WHERE
   1 = 1
   AND outNumber != -1
@@ -1102,7 +1102,7 @@ INSERT INTO fielding_credits(
       playerId,
       abbreviation positionAbbrev,
       credit
-    FROM s_play_credit
+    FROM stg_play_credit
   )
 SELECT
   gamePk,
@@ -1165,7 +1165,7 @@ INSERT INTO actions(
       abbreviation positionAbbrev,
       injuryType,
       description
-    FROM s_play_action
+    FROM stg_play_action
   )
 SELECT
   gamePk,
@@ -1373,7 +1373,7 @@ INSERT INTO pickoffs(
       fromCatcher,
       hasReview,
       code baseCode
-    FROM s_play_pickoff
+    FROM stg_play_pickoff
   )
 SELECT
   gamePk,
@@ -1480,7 +1480,7 @@ INSERT INTO games(
         WHEN gameType = 'R' THEN 'RS'
         ELSE gameType
       END gameType2
-    FROM s_game_context
+    FROM stg_game_context
   )
 SELECT
   gamePk,

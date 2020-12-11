@@ -1,25 +1,25 @@
 USE baseball;
 
-DROP TABLE s_people;
-DROP TABLE s_box_team_batting;
-DROP TABLE s_box_team_pitching;
-DROP TABLE s_box_team_fielding;
-DROP TABLE s_box_player_batting;
-DROP TABLE s_box_player_pitching;
-DROP TABLE s_box_player_fielding;
-DROP TABLE s_box_team_batting_order;
-DROP TABLE s_box_team;
-DROP TABLE s_box_player_game_positions;
-DROP TABLE s_box_player_game_info;
-DROP TABLE s_play_credit;
-DROP TABLE s_play_atbat;
-DROP TABLE s_play_action;
-DROP TABLE s_play_runner;
-DROP TABLE s_play_pitch;
-DROP TABLE s_play_pickoff;
-DROP TABLE s_game_context;
+DROP TABLE stg_people;
+DROP TABLE stg_box_team_batting;
+DROP TABLE stg_box_team_pitching;
+DROP TABLE stg_box_team_fielding;
+DROP TABLE stg_box_player_batting;
+DROP TABLE stg_box_player_pitching;
+DROP TABLE stg_box_player_fielding;
+DROP TABLE stg_box_team_batting_order;
+DROP TABLE stg_box_team;
+DROP TABLE stg_box_player_game_positions;
+DROP TABLE stg_box_player_game_info;
+DROP TABLE stg_play_credit;
+DROP TABLE stg_play_atbat;
+DROP TABLE stg_play_action;
+DROP TABLE stg_play_runner;
+DROP TABLE stg_play_pitch;
+DROP TABLE stg_play_pickoff;
+DROP TABLE stg_game_context;
 
-CREATE TABLE IF NOT EXISTS s_people (
+CREATE TABLE IF NOT EXISTS stg_people (
   abbreviation VARCHAR(150),
   batSideCode VARCHAR(150),
   pitchHandCode VARCHAR(150),
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS s_people (
   strikeZoneBottom DOUBLE
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_team_batting (
+CREATE TABLE IF NOT EXISTS stg_box_team_batting (
   atBats INT(11),
   baseOnBalls INT(11),
   catchersInterference INT(11),
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS s_box_team_batting (
   teamType VARCHAR(20)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_team_pitching (
+CREATE TABLE IF NOT EXISTS stg_box_team_pitching (
   airOuts INT(11),
   atBats INT(11),
   baseOnBalls INT(11),
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS s_box_team_pitching (
   teamType VARCHAR(20)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_team_fielding (
+CREATE TABLE IF NOT EXISTS stg_box_team_fielding (
   assists INT(11),
   caughtStealing INT(11),
   chances INT(11),
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS s_box_team_fielding (
   teamType VARCHAR(20)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_player_pitching (
+CREATE TABLE IF NOT EXISTS stg_box_player_pitching (
   airOuts DOUBLE,
   atBats DOUBLE,
   balls DOUBLE,
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS s_box_player_pitching (
   playerId INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE s_box_player_batting (
+CREATE TABLE stg_box_player_batting (
   atBats DOUBLE,
   baseOnBalls DOUBLE,
   catchersInterference DOUBLE,
@@ -206,7 +206,7 @@ CREATE TABLE s_box_player_batting (
   playerId INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_player_fielding (
+CREATE TABLE IF NOT EXISTS stg_box_player_fielding (
   assists DOUBLE,
   caughtStealing DOUBLE,
   chances DOUBLE,
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS s_box_player_fielding (
   playerId INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_team_batting_order (
+CREATE TABLE IF NOT EXISTS stg_box_team_batting_order (
   gamePk INT(11),
   teamId INT(11),
   playerId INT(11),
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS s_box_team_batting_order (
   battingOrder INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_team (
+CREATE TABLE IF NOT EXISTS stg_box_team (
   abbreviation VARCHAR(100),
   active TINYINT(1),
   allStarStatus VARCHAR(100),
@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS s_box_team (
   teamType VARCHAR(20)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_player_game_positions (
+CREATE TABLE IF NOT EXISTS stg_box_player_game_positions (
   code VARCHAR(100),
   name VARCHAR(100),
   type VARCHAR(100),
@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS s_box_player_game_positions (
   playerId INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_box_player_game_info (
+CREATE TABLE IF NOT EXISTS stg_box_player_game_info (
   isSubstitute TINYINT(1),
   isOnBench TINYINT(1),
   isCurrentPitcher TINYINT(1),
@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS s_box_player_game_info (
   playerId INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_play_atbat (
+CREATE TABLE IF NOT EXISTS stg_play_atbat (
   atBatIndex INT(11),
   captivatingIndex INT(11),
   endTime VARCHAR(100),
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS s_play_atbat (
   gamePk INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_play_runner (
+CREATE TABLE IF NOT EXISTS stg_play_runner (
 END VARCHAR(100),
 isOut TINYINT(1),
 outBase VARCHAR(100),
@@ -337,7 +337,7 @@ gamePk INT(11),
 atBatIndex INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_play_credit (
+CREATE TABLE IF NOT EXISTS stg_play_credit (
   credit VARCHAR(100),
   playerId INT(11),
   abbreviation VARCHAR(100),
@@ -348,7 +348,7 @@ CREATE TABLE IF NOT EXISTS s_play_credit (
   atBatIndex INT(11)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_play_pitch (
+CREATE TABLE IF NOT EXISTS stg_play_pitch (
   callCode VARCHAR(100),
   callDescription VARCHAR(100),
   description VARCHAR(700),
@@ -410,7 +410,7 @@ CREATE TABLE IF NOT EXISTS s_play_pitch (
   type VARCHAR(100)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_play_action (
+CREATE TABLE IF NOT EXISTS stg_play_action (
   description VARCHAR(700),
   event VARCHAR(100),
   awayScore INT(11),
@@ -436,7 +436,7 @@ CREATE TABLE IF NOT EXISTS s_play_action (
   injuryType VARCHAR(100)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS s_play_pickoff (
+CREATE TABLE IF NOT EXISTS stg_play_pickoff (
   description VARCHAR(700),
   code VARCHAR(100),
   hasReview TINYINT(1),
@@ -451,7 +451,7 @@ CREATE TABLE IF NOT EXISTS s_play_pickoff (
   isPitch TINYINT(1)
 ) ENGINE = INNODB;
 
-CREATE TABLE s_game_context (
+CREATE TABLE stg_game_context (
   gamePk INT(11),
   gameType VARCHAR(100),
   majorLeague VARCHAR(20),
