@@ -4,7 +4,6 @@ DROP PROCEDURE players;
 DROP PROCEDURE game_player_batting_stats;
 DROP PROCEDURE game_player_fielding_stats;
 DROP PROCEDURE game_player_pitching_stats;
-DROP PROCEDURE game_batting_orders;
 DROP PROCEDURE teams;
 DROP PROCEDURE game_player_positions;
 DROP PROCEDURE atbats;
@@ -16,10 +15,10 @@ DROP PROCEDURE pickoffs;
 DROP PROCEDURE games;
 DROP PROCEDURE batting_orders;
 
-Delimiter //
+DELIMITER //
 
-CREATE PROCEDURE batting_orders(
-) BEGIN
+CREATE PROCEDURE batting_orders()
+BEGIN
 
 INSERT INTO batting_orders(
     gamePk,
@@ -44,8 +43,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE players(
-) BEGIN
+CREATE PROCEDURE players()
+BEGIN
 
 INSERT INTO players(
     playerId,
@@ -102,8 +101,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE game_player_batting_stats(
-) BEGIN
+CREATE PROCEDURE game_player_batting_stats()
+BEGIN
 
 INSERT INTO game_player_batting_stats(
     gamePk,
@@ -256,8 +255,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE game_player_fielding_stats(
-) BEGIN
+CREATE PROCEDURE game_player_fielding_stats()
+BEGIN
 
 INSERT INTO game_player_fielding_stats(
     gamePk,
@@ -329,8 +328,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE game_player_pitching_stats(
-) BEGIN
+CREATE PROCEDURE game_player_pitching_stats()
+BEGIN
 
 INSERT INTO game_player_pitching_stats(
     gamePk,
@@ -554,44 +553,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE game_batting_orders(
-) BEGIN
-
-INSERT INTO game_batting_orders(
-    gamePk,
-    teamId,
-    playerId,
-    battingOrder
-  )
-  WITH d AS (
-    SELECT
-      gamePk,
-      teamId,
-      playerId,
-      battingOrder
-    FROM stg_box_team_batting_order
-  )
-SELECT
-  gamePk,
-  teamId,
-  playerId,
-  battingOrder
-FROM d
-WHERE
-  1 = 1
-  AND (gamePk, teamId, playerId) NOT IN (
-    SELECT
-      gamePk,
-      teamId,
-      playerId
-    FROM game_batting_orders
-  );
-COMMIT;
-
-END //
-
-CREATE PROCEDURE teams(
-) BEGIN
+CREATE PROCEDURE teams()
+BEGIN
 
 INSERT INTO teams(
     leagueId,
@@ -659,8 +622,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE game_player_positions(
-) BEGIN
+CREATE PROCEDURE game_player_positions()
+BEGIN
 
 INSERT INTO game_player_positions(
     gamePk,
@@ -676,7 +639,7 @@ INSERT INTO game_player_positions(
       teamType,
       playerId,
       abbreviation positionAbbrev
-    FROM baseball.s_box_player_game_positions
+    FROM stg_box_player_game_positions
   )
 SELECT
   gamePk,
@@ -699,8 +662,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE atbats(
-) BEGIN
+CREATE PROCEDURE atbats()
+BEGIN
 
 INSERT INTO atbats(
     gamePk,
@@ -722,40 +685,17 @@ INSERT INTO atbats(
     eventType,
     batSide,
     pitchHand,
+    menOnBase,
     description
-  )
-  WITH d AS (
-    SELECT
-      gamePk,
-      inning,
-      halfInning,
-      atBatIndex,
-      outs AS endOuts,
-      balls AS endBalls,
-      strikes AS endStrikes,
-      batterId,
-      pitcherId,
-      hasOut,
-      hasReview,
-      isScoringPlay,
-      rbi,
-      awayScore,
-      homeScore,
-      event,
-      eventType,
-      batterSideCode batSide,
-      pitcherHandCode pitchHand,
-      description
-    FROM stg_play_atbat
   )
 SELECT
   gamePk,
   inning,
   halfInning,
   atBatIndex,
-  endOuts,
-  endBalls,
-  endStrikes,
+  outs AS endOuts,
+  balls AS endBalls,
+  strikes AS endStrikes,
   batterId,
   pitcherId,
   hasOut,
@@ -766,10 +706,11 @@ SELECT
   homeScore,
   event,
   eventType,
-  batSide,
-  pitchHand,
+  batterSideCode AS batSide,
+  pitcherHandCode AS pitchHand,
+  menOnBase,
   description
-FROM d
+FROM stg_play_atbat
 WHERE
   1 = 1
   AND (gamePk, atBatIndex) NOT IN (
@@ -821,8 +762,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE pitches(
-) BEGIN
+CREATE PROCEDURE pitches()
+BEGIN
 
 INSERT INTO pitches(
     gamePk,
@@ -982,8 +923,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE runners(
-) BEGIN
+CREATE PROCEDURE runners()
+BEGIN
 
 INSERT INTO runners(
     gamePk,
@@ -996,59 +937,36 @@ INSERT INTO runners(
     rbi,
     responsiblePitcherId,
     runnerId,
-    start,
-  END,
-  isOut,
-  outBase,
-  outNumber,
-  earned,
-  teamUnearned
-)
-WITH d AS (
-  SELECT
-    gamePk,
-    atBatIndex,
-    playIndex,
-    event,
-    eventType,
-    isScoringEvent isScoringPlay,
-    movementReason,
-    rbi,
-    CAST(responsiblePitcherId AS UNSIGNED) responsiblePitcherId,
-    runnerId,
-    start,
-END,
-isOut,
-outBase,
-CAST(outNumber AS UNSIGNED) outNumber,
-earned,
-teamUnearned
-FROM stg_play_runner
-WHERE
-  1 = 1
-  AND outNumber != -1
-)
-SELECT
-  gamePk,
-  atBatIndex,
-  playIndex,
-  event,
-  eventType,
-  isScoringPlay,
-  movementReason,
-  rbi,
-  responsiblePitcherId,
-  runnerId,
-  start,
-END,
-isOut,
-outBase,
-outNumber,
-earned,
-teamUnearned
-FROM d
-WHERE
-  1 = 1
+    startBase,
+    endBase,
+    isOut,
+    outBase,
+    outNumber,
+    earned,
+    teamUnearned
+  )
+    SELECT
+      gamePk,
+      atBatIndex,
+      playIndex,
+      event,
+      eventType,
+      isScoringEvent isScoringPlay,
+      movementReason,
+      rbi,
+      CAST(responsiblePitcherId AS UNSIGNED) responsiblePitcherId,
+      runnerId,
+      startBase,
+      endBase,
+      isOut,
+      outBase,
+      CAST(outNumber AS UNSIGNED) outNumber,
+      earned,
+      teamUnearned
+    FROM stg_play_runner
+    WHERE
+      1 = 1
+      AND COALESCE(outNumber, 0) != -1
   AND (gamePk, atBatIndex) NOT IN (
     SELECT
       gamePk,
@@ -1085,8 +1003,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE fielding_credits(
-) BEGIN
+CREATE PROCEDURE fielding_credits()
+BEGIN
 
 INSERT INTO fielding_credits(
     gamePk,
@@ -1124,8 +1042,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE actions(
-) BEGIN
+CREATE PROCEDURE actions()
+BEGIN
 
 INSERT INTO actions(
     gamePk,
@@ -1348,8 +1266,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE pickoffs(
-) BEGIN
+CREATE PROCEDURE pickoffs()
+BEGIN
 
 INSERT INTO pickoffs(
     gamePk,
@@ -1399,8 +1317,8 @@ COMMIT;
 
 END //
 
-CREATE PROCEDURE games(
-) BEGIN
+CREATE PROCEDURE games()
+BEGIN
 
 INSERT INTO games(
     gamePk,
@@ -1439,7 +1357,6 @@ INSERT INTO games(
     majorLeagueId,
     gameType2
   )
-  WITH d AS (
     SELECT
       gamePk,
       gameType,
@@ -1481,54 +1398,17 @@ INSERT INTO games(
         ELSE gameType
       END gameType2
     FROM stg_game_context
-  )
-SELECT
-  gamePk,
-  gameType,
-  seasonId,
-  gameDate,
-  isTie,
-  gameNumber,
-  doubleHeader,
-  dayNight,
-  scheduledInnings,
-  gamesInSeries,
-  seriesDescription,
-  ifNecessaryDescription,
-  gameId,
-  abstractGameState,
-  codedGameState,
-  detailedState,
-  awayWins,
-  awayLosses,
-  awayPct,
-  awayScore,
-  awayTeamId,
-  awayIsWinner,
-  homeWins,
-  homeLosses,
-  homePct,
-  homeScore,
-  homeTeamId,
-  homeIsWinner,
-  venueId,
-  homeTeamName,
-  awayTeamName,
-  venueName,
-  majorLeague,
-  majorLeagueId,
-  gameType2
-FROM d
 WHERE
   1 = 1
   AND gamePk NOT IN (
     SELECT
       gamePk
     FROM games
-  );
+  )
+  AND gamePk IS NOT NULL;
 
 COMMIT;
 
 END //
 
-Delimiter;
+DELIMITER ;

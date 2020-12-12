@@ -314,15 +314,16 @@ CREATE TABLE IF NOT EXISTS stg_play_atbat (
   pitcherHandDescription VARCHAR(100),
   pitcherId INT(11),
   batterId INT(11),
+  menOnBase VARCHAR(100),
   gamePk INT(11)
 ) ENGINE = INNODB;
 
 CREATE TABLE IF NOT EXISTS stg_play_runner (
-END VARCHAR(100),
+endBase VARCHAR(100),
 isOut TINYINT(1),
 outBase VARCHAR(100),
 outNumber DOUBLE,
-start VARCHAR(100),
+startBase VARCHAR(100),
 earned TINYINT(1),
 event VARCHAR(100),
 eventType VARCHAR(100),

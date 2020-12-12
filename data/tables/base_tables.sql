@@ -207,6 +207,7 @@ CREATE TABLE atbats (
   eventType VARCHAR(100),
   batSide VARCHAR(1),
   pitchHand VARCHAR(1),
+  menOnBase VARCHAR(10),
   description VARCHAR(700)
 ) ENGINE = INNODB;
 
@@ -268,13 +269,13 @@ CREATE TABLE runners (
   rbi TINYINT(1),
   responsiblePitcherId INT(11),
   runnerId INT(11),
-  start VARCHAR(10),
-END VARCHAR(10),
-isOut TINYINT(1),
-outBase VARCHAR(10),
-outNumber INT(11),
-earned TINYINT(1),
-teamUnearned TINYINT(1)
+  startBase VARCHAR(10),
+  endBase VARCHAR(10),
+  isOut TINYINT(1),
+  outBase VARCHAR(10),
+  outNumber INT(11),
+  earned TINYINT(1),
+  teamUnearned TINYINT(1)
 ) ENGINE = INNODB;
 
 ALTER TABLE runners ADD INDEX(gamePk, atBatIndex);
