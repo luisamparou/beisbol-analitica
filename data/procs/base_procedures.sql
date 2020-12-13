@@ -449,19 +449,19 @@ INSERT INTO teams(
   COALESCE(season, 0) seasonId,
   id AS teamId,
   abbreviation teamAbbreviation,
-  /* Problema con la temporada 2019 de LBPRC y LIDOM */
-  CASE
-    WHEN season = 2019 AND teamName = 'Santurce' THEN 'Santurce'
-    WHEN locationName = 'Santo Dominigo' THEN 'Santo Domingo'
-    ELSE locationName
-  END locationName,
   shortName teamShortName,
   name teamFullName,
   teamCode,
   teamName,
   leagueName,
   venueId,
-  venueName
+  venueName,
+  /* Problema con la temporada 2019 de LBPRC y LIDOM */
+  CASE
+    WHEN season = 2019 AND teamName = 'Santurce' THEN 'Santurce'
+    WHEN locationName = 'Santo Dominigo' THEN 'Santo Domingo'
+    ELSE locationName
+  END locationName
 FROM stg_box_team
 WHERE
   1 = 1
