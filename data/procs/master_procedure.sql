@@ -26,6 +26,7 @@ CALL clean_staging_tables();
 
 -- Run Expectancy
 CALL rem_play_by_play();
+CALL rem_run_expectancy_matrix();
 
 END //
 
