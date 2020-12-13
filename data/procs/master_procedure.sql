@@ -24,6 +24,9 @@ CALL actions();
 CALL pickoffs();
 CALL clean_staging_tables();
 
+-- Run Expectancy
+CALL rem_play_by_play();
+
 END //
 
 DELIMITER;

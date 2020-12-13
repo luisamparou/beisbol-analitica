@@ -60,24 +60,8 @@ INSERT INTO players(
     batSide,
     pitchHand
   )
-  WITH d AS (
-    SELECT DISTINCT
-      id playerId,
-      firstName,
-      lastName,
-      birthDate,
-      birthCity,
-      birthStateProvince,
-      birthCountry,
-      strikeZoneTop,
-      strikeZoneBottom,
-      abbreviation,
-      batSideCode batSide,
-      pitchHandCode pitchHand
-    FROM stg_people
-  )
-SELECT
-  playerId,
+SELECT DISTINCT
+  id playerId,
   firstName,
   lastName,
   birthDate,
@@ -87,16 +71,17 @@ SELECT
   strikeZoneTop,
   strikeZoneBottom,
   abbreviation,
-  batSide,
-  pitchHand
-FROM d
+  batSideCode batSide,
+  pitchHandCode pitchHand
+FROM stg_people
 WHERE
   1 = 1
-  AND playerId NOT IN (
+  AND id NOT IN (
     SELECT
       playerId
     FROM players
   );
+
 COMMIT;
 
 END //
@@ -136,113 +121,74 @@ INSERT INTO game_player_batting_stats(
     plateAppearances,
     unintentionalWalks
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      teamId,
-      teamType,
-      playerId,
-      COALESCE(CAST(atBats AS UNSIGNED), 0) atBats,
-      COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) walks,
-      COALESCE(CAST(catchersInterference AS UNSIGNED), 0) catchersInterference,
-      COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
-      COALESCE(CAST(doubles AS UNSIGNED), 0) doubles,
-      COALESCE(CAST(flyOuts AS UNSIGNED), 0) flyOuts,
-      COALESCE(CAST(groundIntoDoublePlay AS UNSIGNED), 0) groundIntoDoublePlay,
-      COALESCE(CAST(groundIntoTriplePlay AS UNSIGNED), 0) groundIntoTriplePlay,
-      COALESCE(CAST(groundOuts AS UNSIGNED), 0) groundOuts,
-      COALESCE(CAST(hitByPitch AS UNSIGNED), 0) hitByPitch,
-      COALESCE(CAST(hits AS UNSIGNED), 0) hits,
-      COALESCE(CAST(homeRuns AS UNSIGNED), 0) homeRuns,
-      COALESCE(CAST(intentionalWalks AS UNSIGNED), 0) intentionalWalks,
-      COALESCE(CAST(leftOnBase AS UNSIGNED), 0) leftOnBase,
-      COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
-      COALESCE(CAST(rbi AS UNSIGNED), 0) rbi,
-      COALESCE(CAST(runs AS UNSIGNED), 0) runs,
-      COALESCE(CAST(sacBunts AS UNSIGNED), 0) sacBunts,
-      COALESCE(CAST(sacFlies AS UNSIGNED), 0) sacFlies,
-      COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases,
-      COALESCE(CAST(strikeOuts AS UNSIGNED), 0) strikeOuts,
-      COALESCE(CAST(totalBases AS UNSIGNED), 0) totalBases,
-      COALESCE(CAST(triples AS UNSIGNED), 0) triples,
-      COALESCE(CAST(hits AS UNSIGNED), 0) - COALESCE(CAST(homeRuns AS UNSIGNED), 0) - COALESCE(
-        CAST(doubles AS UNSIGNED),
-        0
-      ) - COALESCE(CAST(triples AS UNSIGNED), 0) singles,
-      COALESCE(CAST(atBats AS UNSIGNED), 0) + COALESCE(CAST(sacBunts AS UNSIGNED), 0) + COALESCE(
-        CAST(sacFlies AS UNSIGNED),
-        0
-      ) + COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) + COALESCE(
-        CAST(hitByPitch AS UNSIGNED),
-        0
-      ) plateAppearances,
-      COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) - COALESCE(
-        CAST(intentionalWalks AS UNSIGNED),
-        0
-      ) unintentionalWalks
-    FROM stg_box_player_batting
-    WHERE
-      1 = 1
-      AND (
-        atBats > 0
-        OR baseOnBalls > 0
-        OR catchersInterference > 0
-        OR caughtStealing > 0
-        OR doubles > 0
-        OR flyOuts > 0
-        OR groundIntoDoublePlay > 0
-        OR groundIntoTriplePlay > 0
-        OR groundOuts > 0
-        OR hitByPitch > 0
-        OR hits > 0
-        OR homeRuns > 0
-        OR intentionalWalks > 0
-        OR leftOnBase > 0
-        OR pickoffs > 0
-        OR rbi > 0
-        OR runs > 0
-        OR sacBunts > 0
-        OR sacFlies > 0
-        OR stolenBases > 0
-        OR strikeOuts > 0
-        OR totalBases > 0
-        OR triples > 0
-      )
-  )
 SELECT
   gamePk,
   teamId,
   teamType,
   playerId,
-  atBats,
-  walks,
-  catchersInterference,
-  caughtStealing,
-  doubles,
-  flyOuts,
-  groundIntoDoublePlay,
-  groundIntoTriplePlay,
-  groundOuts,
-  hitByPitch,
-  hits,
-  homeRuns,
-  intentionalWalks,
-  leftOnBase,
-  pickoffs,
-  rbi,
-  runs,
-  sacBunts,
-  sacFlies,
-  stolenBases,
-  strikeOuts,
-  totalBases,
-  triples,
-  singles,
-  plateAppearances,
-  unintentionalWalks
-FROM d
+  COALESCE(CAST(atBats AS UNSIGNED), 0) atBats,
+  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) walks,
+  COALESCE(CAST(catchersInterference AS UNSIGNED), 0) catchersInterference,
+  COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
+  COALESCE(CAST(doubles AS UNSIGNED), 0) doubles,
+  COALESCE(CAST(flyOuts AS UNSIGNED), 0) flyOuts,
+  COALESCE(CAST(groundIntoDoublePlay AS UNSIGNED), 0) groundIntoDoublePlay,
+  COALESCE(CAST(groundIntoTriplePlay AS UNSIGNED), 0) groundIntoTriplePlay,
+  COALESCE(CAST(groundOuts AS UNSIGNED), 0) groundOuts,
+  COALESCE(CAST(hitByPitch AS UNSIGNED), 0) hitByPitch,
+  COALESCE(CAST(hits AS UNSIGNED), 0) hits,
+  COALESCE(CAST(homeRuns AS UNSIGNED), 0) homeRuns,
+  COALESCE(CAST(intentionalWalks AS UNSIGNED), 0) intentionalWalks,
+  COALESCE(CAST(leftOnBase AS UNSIGNED), 0) leftOnBase,
+  COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
+  COALESCE(CAST(rbi AS UNSIGNED), 0) rbi,
+  COALESCE(CAST(runs AS UNSIGNED), 0) runs,
+  COALESCE(CAST(sacBunts AS UNSIGNED), 0) sacBunts,
+  COALESCE(CAST(sacFlies AS UNSIGNED), 0) sacFlies,
+  COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases,
+  COALESCE(CAST(strikeOuts AS UNSIGNED), 0) strikeOuts,
+  COALESCE(CAST(totalBases AS UNSIGNED), 0) totalBases,
+  COALESCE(CAST(triples AS UNSIGNED), 0) triples,
+  COALESCE(CAST(hits AS UNSIGNED), 0) - COALESCE(CAST(homeRuns AS UNSIGNED), 0) - COALESCE(
+    CAST(doubles AS UNSIGNED),
+    0
+  ) - COALESCE(CAST(triples AS UNSIGNED), 0) singles,
+  COALESCE(CAST(atBats AS UNSIGNED), 0) + COALESCE(CAST(sacBunts AS UNSIGNED), 0) + COALESCE(
+    CAST(sacFlies AS UNSIGNED),
+    0
+  ) + COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) + COALESCE(CAST(hitByPitch AS UNSIGNED), 0) plateAppearances,
+  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) - COALESCE(
+    CAST(intentionalWalks AS UNSIGNED),
+    0
+  ) unintentionalWalks
+FROM stg_box_player_batting
 WHERE
   1 = 1
+  AND (
+    atBats > 0
+    OR baseOnBalls > 0
+    OR catchersInterference > 0
+    OR caughtStealing > 0
+    OR doubles > 0
+    OR flyOuts > 0
+    OR groundIntoDoublePlay > 0
+    OR groundIntoTriplePlay > 0
+    OR groundOuts > 0
+    OR hitByPitch > 0
+    OR hits > 0
+    OR homeRuns > 0
+    OR intentionalWalks > 0
+    OR leftOnBase > 0
+    OR pickoffs > 0
+    OR rbi > 0
+    OR runs > 0
+    OR sacBunts > 0
+    OR sacFlies > 0
+    OR stolenBases > 0
+    OR strikeOuts > 0
+    OR totalBases > 0
+    OR triples > 0
+  )
   AND (gamePk, teamId, playerId) NOT IN (
     SELECT
       gamePk,
@@ -272,50 +218,32 @@ INSERT INTO game_player_fielding_stats(
     putOuts,
     stolenBases
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      teamId,
-      teamType,
-      playerId,
-      COALESCE(CAST(assists AS UNSIGNED), 0) assists,
-      COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
-      COALESCE(CAST(chances AS UNSIGNED), 0) chances,
-      COALESCE(CAST(errors AS UNSIGNED), 0) errors,
-      COALESCE(CAST(passedBall AS UNSIGNED), 0) passedBall,
-      COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
-      COALESCE(CAST(putOuts AS UNSIGNED), 0) putOuts,
-      COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases
-    FROM stg_box_player_fielding
-    WHERE
-      1 = 1
-      AND (
-        COALESCE(CAST(assists AS UNSIGNED), 0) > 0
-        OR COALESCE(CAST(caughtStealing AS UNSIGNED), 0) > 0
-        OR COALESCE(CAST(chances AS UNSIGNED), 0) > 0
-        OR COALESCE(CAST(errors AS UNSIGNED), 0) > 0
-        OR COALESCE(CAST(passedBall AS UNSIGNED), 0) > 0
-        OR COALESCE(CAST(pickoffs AS UNSIGNED), 0) > 0
-        OR COALESCE(CAST(putOuts AS UNSIGNED), 0) > 0
-        OR COALESCE(CAST(stolenBases AS UNSIGNED), 0) > 0
-      )
-  )
 SELECT
   gamePk,
   teamId,
   teamType,
   playerId,
-  assists,
-  caughtStealing,
-  chances,
-  errors,
-  passedBall,
-  pickoffs,
-  putOuts,
-  stolenBases
-FROM d
+  COALESCE(CAST(assists AS UNSIGNED), 0) assists,
+  COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
+  COALESCE(CAST(chances AS UNSIGNED), 0) chances,
+  COALESCE(CAST(errors AS UNSIGNED), 0) errors,
+  COALESCE(CAST(passedBall AS UNSIGNED), 0) passedBall,
+  COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
+  COALESCE(CAST(putOuts AS UNSIGNED), 0) putOuts,
+  COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases
+FROM stg_box_player_fielding
 WHERE
   1 = 1
+  AND (
+    COALESCE(CAST(assists AS UNSIGNED), 0) > 0
+    OR COALESCE(CAST(caughtStealing AS UNSIGNED), 0) > 0
+    OR COALESCE(CAST(chances AS UNSIGNED), 0) > 0
+    OR COALESCE(CAST(errors AS UNSIGNED), 0) > 0
+    OR COALESCE(CAST(passedBall AS UNSIGNED), 0) > 0
+    OR COALESCE(CAST(pickoffs AS UNSIGNED), 0) > 0
+    OR COALESCE(CAST(putOuts AS UNSIGNED), 0) > 0
+    OR COALESCE(CAST(stolenBases AS UNSIGNED), 0) > 0
+  )
   AND (gamePk, teamId, playerId) NOT IN (
     SELECT
       gamePk,
@@ -381,167 +309,110 @@ INSERT INTO game_player_pitching_stats(
     plateAppearances,
     unintentionalWalks
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      teamId,
-      teamType,
-      playerId,
-      COALESCE(CAST(airOuts AS UNSIGNED), 0) airOuts,
-      COALESCE(CAST(atBats AS UNSIGNED), 0) atBats,
-      COALESCE(CAST(balls AS UNSIGNED), 0) balls,
-      COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) walks,
-      COALESCE(CAST(battersFaced AS UNSIGNED), 0) battersFaced,
-      COALESCE(CAST(blownSaves AS UNSIGNED), 0) blownSaves,
-      COALESCE(CAST(catchersInterference AS UNSIGNED), 0) catchersInterference,
-      COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
-      COALESCE(CAST(completeGames AS UNSIGNED), 0) completeGames,
-      COALESCE(CAST(doubles AS UNSIGNED), 0) doubles,
-      COALESCE(CAST(earnedRuns AS UNSIGNED), 0) earnedRuns,
-      COALESCE(CAST(gamesFinished AS UNSIGNED), 0) gamesFinished,
-      COALESCE(CAST(gamesPitched AS UNSIGNED), 0) gamesPitched,
-      COALESCE(CAST(gamesPlayed AS UNSIGNED), 0) gamesPlayed,
-      COALESCE(CAST(gamesStarted AS UNSIGNED), 0) gamesStarted,
-      COALESCE(CAST(groundOuts AS UNSIGNED), 0) groundOuts,
-      COALESCE(CAST(hitBatsmen AS UNSIGNED), 0) hitBatsmen,
-      COALESCE(CAST(hits AS UNSIGNED), 0) hits,
-      COALESCE(CAST(holds AS UNSIGNED), 0) holds,
-      COALESCE(CAST(homeRuns AS UNSIGNED), 0) homeRuns,
-      COALESCE(CAST(inheritedRunners AS UNSIGNED), 0) inheritedRunners,
-      COALESCE(CAST(inheritedRunnersScored AS UNSIGNED), 0) inheritedRunnersScored,
-      COALESCE(CAST(intentionalWalks AS UNSIGNED), 0) intentionalWalks,
-      COALESCE(CAST(losses AS UNSIGNED), 0) losses,
-      COALESCE(CAST(numberOfPitches AS UNSIGNED), 0) numberOfPitches,
-      COALESCE(CAST(outs AS UNSIGNED), 0) outs,
-      COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
-      COALESCE(CAST(pitchesThrown AS UNSIGNED), 0) pitchesThrown,
-      COALESCE(CAST(rbi AS UNSIGNED), 0) rbi,
-      COALESCE(CAST(runs AS UNSIGNED), 0) runs,
-      COALESCE(CAST(sacBunts AS UNSIGNED), 0) sacBunts,
-      COALESCE(CAST(sacFlies AS UNSIGNED), 0) sacFlies,
-      COALESCE(CAST(saveOpportunities AS UNSIGNED), 0) saveOpportunities,
-      COALESCE(CAST(saves AS UNSIGNED), 0) saves,
-      COALESCE(CAST(shutouts AS UNSIGNED), 0) shutouts,
-      COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases,
-      COALESCE(CAST(strikeOuts AS UNSIGNED), 0) strikeOuts,
-      COALESCE(CAST(strikes AS UNSIGNED), 0) strikes,
-      COALESCE(CAST(triples AS UNSIGNED), 0) triples,
-      COALESCE(CAST(wildPitches AS UNSIGNED), 0) wildPitches,
-      COALESCE(CAST(wins AS UNSIGNED), 0) wins,
-      COALESCE(CAST(hits AS UNSIGNED), 0) - COALESCE(CAST(homeRuns AS UNSIGNED), 0) - COALESCE(
-        CAST(doubles AS UNSIGNED),
-        0
-      ) - COALESCE(CAST(triples AS UNSIGNED), 0) singles,
-      COALESCE(CAST(atBats AS UNSIGNED), 0) + COALESCE(CAST(sacBunts AS UNSIGNED), 0) + COALESCE(
-        CAST(sacFlies AS UNSIGNED),
-        0
-      ) + COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) + COALESCE(
-        CAST(hitBatsmen AS UNSIGNED),
-        0
-      ) plateAppearances,
-      COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) - COALESCE(
-        CAST(intentionalWalks AS UNSIGNED),
-        0
-      ) unintentionalWalks
-    FROM stg_box_player_pitching
-    WHERE
-      1 = 1
-      AND (
-        airOuts > 0
-        OR atBats > 0
-        OR balls > 0
-        OR baseOnBalls > 0
-        OR battersFaced > 0
-        OR blownSaves > 0
-        OR catchersInterference > 0
-        OR caughtStealing > 0
-        OR completeGames > 0
-        OR doubles > 0
-        OR earnedRuns > 0
-        OR gamesFinished > 0
-        OR gamesPitched > 0
-        OR gamesPlayed > 0
-        OR gamesStarted > 0
-        OR groundOuts > 0
-        OR hitBatsmen > 0
-        OR hits > 0
-        OR holds > 0
-        OR homeRuns > 0
-        OR inheritedRunners > 0
-        OR inheritedRunnersScored > 0
-        OR intentionalWalks > 0
-        OR losses > 0
-        OR numberOfPitches > 0
-        OR outs > 0
-        OR pickoffs > 0
-        OR pitchesThrown > 0
-        OR rbi > 0
-        OR runs > 0
-        OR sacBunts > 0
-        OR sacFlies > 0
-        OR saveOpportunities > 0
-        OR saves > 0
-        OR shutouts > 0
-        OR stolenBases > 0
-        OR strikeOuts > 0
-        OR strikes > 0
-        OR triples > 0
-        OR wildPitches > 0
-        OR wins > 0
-      )
-  )
 SELECT
   gamePk,
   teamId,
   teamType,
   playerId,
-  airOuts,
-  atBats,
-  balls,
-  walks,
-  battersFaced,
-  blownSaves,
-  catchersInterference,
-  caughtStealing,
-  completeGames,
-  doubles,
-  earnedRuns,
-  gamesFinished,
-  gamesPitched,
-  gamesPlayed,
-  gamesStarted,
-  groundOuts,
-  hitBatsmen,
-  hits,
-  holds,
-  homeRuns,
-  inheritedRunners,
-  inheritedRunnersScored,
-  intentionalWalks,
-  losses,
-  numberOfPitches,
-  outs,
-  pickoffs,
-  pitchesThrown,
-  rbi,
-  runs,
-  sacBunts,
-  sacFlies,
-  saveOpportunities,
-  saves,
-  shutouts,
-  stolenBases,
-  strikeOuts,
-  strikes,
-  triples,
-  wildPitches,
-  wins,
-  singles,
-  plateAppearances,
-  unintentionalWalks
-FROM d
+  COALESCE(CAST(airOuts AS UNSIGNED), 0) airOuts,
+  COALESCE(CAST(atBats AS UNSIGNED), 0) atBats,
+  COALESCE(CAST(balls AS UNSIGNED), 0) balls,
+  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) walks,
+  COALESCE(CAST(battersFaced AS UNSIGNED), 0) battersFaced,
+  COALESCE(CAST(blownSaves AS UNSIGNED), 0) blownSaves,
+  COALESCE(CAST(catchersInterference AS UNSIGNED), 0) catchersInterference,
+  COALESCE(CAST(caughtStealing AS UNSIGNED), 0) caughtStealing,
+  COALESCE(CAST(completeGames AS UNSIGNED), 0) completeGames,
+  COALESCE(CAST(doubles AS UNSIGNED), 0) doubles,
+  COALESCE(CAST(earnedRuns AS UNSIGNED), 0) earnedRuns,
+  COALESCE(CAST(gamesFinished AS UNSIGNED), 0) gamesFinished,
+  COALESCE(CAST(gamesPitched AS UNSIGNED), 0) gamesPitched,
+  COALESCE(CAST(gamesPlayed AS UNSIGNED), 0) gamesPlayed,
+  COALESCE(CAST(gamesStarted AS UNSIGNED), 0) gamesStarted,
+  COALESCE(CAST(groundOuts AS UNSIGNED), 0) groundOuts,
+  COALESCE(CAST(hitBatsmen AS UNSIGNED), 0) hitBatsmen,
+  COALESCE(CAST(hits AS UNSIGNED), 0) hits,
+  COALESCE(CAST(holds AS UNSIGNED), 0) holds,
+  COALESCE(CAST(homeRuns AS UNSIGNED), 0) homeRuns,
+  COALESCE(CAST(inheritedRunners AS UNSIGNED), 0) inheritedRunners,
+  COALESCE(CAST(inheritedRunnersScored AS UNSIGNED), 0) inheritedRunnersScored,
+  COALESCE(CAST(intentionalWalks AS UNSIGNED), 0) intentionalWalks,
+  COALESCE(CAST(losses AS UNSIGNED), 0) losses,
+  COALESCE(CAST(numberOfPitches AS UNSIGNED), 0) numberOfPitches,
+  COALESCE(CAST(outs AS UNSIGNED), 0) outs,
+  COALESCE(CAST(pickoffs AS UNSIGNED), 0) pickoffs,
+  COALESCE(CAST(pitchesThrown AS UNSIGNED), 0) pitchesThrown,
+  COALESCE(CAST(rbi AS UNSIGNED), 0) rbi,
+  COALESCE(CAST(runs AS UNSIGNED), 0) runs,
+  COALESCE(CAST(sacBunts AS UNSIGNED), 0) sacBunts,
+  COALESCE(CAST(sacFlies AS UNSIGNED), 0) sacFlies,
+  COALESCE(CAST(saveOpportunities AS UNSIGNED), 0) saveOpportunities,
+  COALESCE(CAST(saves AS UNSIGNED), 0) saves,
+  COALESCE(CAST(shutouts AS UNSIGNED), 0) shutouts,
+  COALESCE(CAST(stolenBases AS UNSIGNED), 0) stolenBases,
+  COALESCE(CAST(strikeOuts AS UNSIGNED), 0) strikeOuts,
+  COALESCE(CAST(strikes AS UNSIGNED), 0) strikes,
+  COALESCE(CAST(triples AS UNSIGNED), 0) triples,
+  COALESCE(CAST(wildPitches AS UNSIGNED), 0) wildPitches,
+  COALESCE(CAST(wins AS UNSIGNED), 0) wins,
+  COALESCE(CAST(hits AS UNSIGNED), 0) - COALESCE(CAST(homeRuns AS UNSIGNED), 0) - COALESCE(
+    CAST(doubles AS UNSIGNED),
+    0
+  ) - COALESCE(CAST(triples AS UNSIGNED), 0) singles,
+  COALESCE(CAST(atBats AS UNSIGNED), 0) + COALESCE(CAST(sacBunts AS UNSIGNED), 0) + COALESCE(
+    CAST(sacFlies AS UNSIGNED),
+    0
+  ) + COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) + COALESCE(CAST(hitBatsmen AS UNSIGNED), 0) plateAppearances,
+  COALESCE(CAST(baseOnBalls AS UNSIGNED), 0) - COALESCE(
+    CAST(intentionalWalks AS UNSIGNED),
+    0
+  ) unintentionalWalks
+FROM stg_box_player_pitching
 WHERE
   1 = 1
+  AND (
+    airOuts > 0
+    OR atBats > 0
+    OR balls > 0
+    OR baseOnBalls > 0
+    OR battersFaced > 0
+    OR blownSaves > 0
+    OR catchersInterference > 0
+    OR caughtStealing > 0
+    OR completeGames > 0
+    OR doubles > 0
+    OR earnedRuns > 0
+    OR gamesFinished > 0
+    OR gamesPitched > 0
+    OR gamesPlayed > 0
+    OR gamesStarted > 0
+    OR groundOuts > 0
+    OR hitBatsmen > 0
+    OR hits > 0
+    OR holds > 0
+    OR homeRuns > 0
+    OR inheritedRunners > 0
+    OR inheritedRunnersScored > 0
+    OR intentionalWalks > 0
+    OR losses > 0
+    OR numberOfPitches > 0
+    OR outs > 0
+    OR pickoffs > 0
+    OR pitchesThrown > 0
+    OR rbi > 0
+    OR runs > 0
+    OR sacBunts > 0
+    OR sacFlies > 0
+    OR saveOpportunities > 0
+    OR saves > 0
+    OR shutouts > 0
+    OR stolenBases > 0
+    OR strikeOuts > 0
+    OR strikes > 0
+    OR triples > 0
+    OR wildPitches > 0
+    OR wins > 0
+  )
   AND (gamePk, teamId, playerId) NOT IN (
     SELECT
       gamePk,
@@ -549,6 +420,7 @@ WHERE
       playerId
     FROM game_player_pitching_stats
   );
+
 COMMIT;
 
 END //
@@ -571,46 +443,29 @@ INSERT INTO teams(
     venueName,
     locationName
   )
-  WITH d AS (
-    SELECT DISTINCT
-      leagueID,
-      divisionId,
-      COALESCE(season, 0) seasonId,
-      id AS teamId,
-      abbreviation teamAbbreviation,
-      /* Problema con la temporada 2019 de LBPRC y LIDOM */
-      CASE
-        WHEN season = 2019 AND teamName = 'Santurce' THEN 'Santurce'
-        WHEN locationName = 'Santo Dominigo' THEN 'Santo Domingo'
-        ELSE locationName
-      END locationName,
-      shortName teamShortName,
-      name teamFullName,
-      teamCode,
-      teamName,
-      leagueName,
-      venueId,
-      venueName
-    FROM stg_box_team
-  )
-SELECT
-  leagueId,
+  SELECT DISTINCT
+  leagueID,
   divisionId,
-  seasonId,
-  teamId,
-  teamAbbreviation,
+  COALESCE(season, 0) seasonId,
+  id AS teamId,
+  abbreviation teamAbbreviation,
+  /* Problema con la temporada 2019 de LBPRC y LIDOM */
+  CASE
+    WHEN season = 2019 AND teamName = 'Santurce' THEN 'Santurce'
+    WHEN locationName = 'Santo Dominigo' THEN 'Santo Domingo'
+    ELSE locationName
+  END locationName,
+  shortName teamShortName,
+  name teamFullName,
   teamCode,
-  teamShortName,
-  teamFullName,
   teamName,
   leagueName,
   venueId,
-  venueName,
-  locationName
-FROM d
+  venueName
+FROM stg_box_team
 WHERE
   1 = 1
-  AND (leagueId, COALESCE(seasonId, 0), teamId) NOT IN (
+  AND (leagueId, COALESCE(season, 0), teamId) NOT IN (
     SELECT
       leagueId,
       seasonId,
@@ -632,22 +487,13 @@ INSERT INTO game_player_positions(
     playerId,
     positionAbbrev
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      teamId,
-      teamType,
-      playerId,
-      abbreviation positionAbbrev
-    FROM stg_box_player_game_positions
-  )
 SELECT
   gamePk,
   teamId,
   teamType,
   playerId,
-  positionAbbrev
-FROM d
+  abbreviation positionAbbrev
+FROM stg_box_player_game_positions
 WHERE
   1 = 1
   AND (gamePk, teamId, playerId) NOT IN (
@@ -795,48 +641,16 @@ INSERT INTO pitches(
     coordX,
     coordY
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      atBatIndex,
-      `index` playIndex,
-      pitchNumber,
-      balls AS endBalls,
-      strikes AS endStrikes,
-      callCode,
-      callDescription,
-      description callDescription2,
-      code,
-      isInPlay,
-      isStrike,
-      isBall,
-      typeCode,
-      typeDescription,
-      hasReview,
-      runnerGoing,
-      strikeZoneTop,
-      strikeZoneBottom,
-      x,
-      y,
-      x0,
-      y0,
-      trajectory,
-      hardness,
-      location,
-      coordX,
-      coordY
-    FROM stg_play_pitch
-  )
 SELECT
   gamePk,
   atBatIndex,
-  playIndex,
+  `index` playIndex,
   pitchNumber,
-  endBalls,
-  endStrikes,
+  balls AS endBalls,
+  strikes AS endStrikes,
   callCode,
   callDescription,
-  callDescription2,
+  description callDescription2,
   code,
   isInPlay,
   isStrike,
@@ -856,7 +670,7 @@ SELECT
   location,
   coordX,
   coordY
-FROM d
+FROM stg_play_pitch
 WHERE
   1 = 1
   AND (gamePk, atBatIndex) NOT IN (
@@ -1013,22 +827,13 @@ INSERT INTO fielding_credits(
     positionAbbrev,
     credit
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      atBatIndex,
-      playerId,
-      abbreviation positionAbbrev,
-      credit
-    FROM stg_play_credit
-  )
 SELECT
   gamePk,
   atBatIndex,
   playerId,
-  positionAbbrev,
+  abbreviation positionAbbrev,
   credit
-FROM d
+FROM stg_play_credit
 WHERE
   1 = 1
   AND (gamePk, atBatIndex) NOT IN (
@@ -1064,35 +869,14 @@ INSERT INTO actions(
     injuryType,
     description
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      atBatIndex,
-      `index` playIndex,
-      playerId,
-      outs AS endOuts,
-      balls AS endBalls,
-      strikes AS endStrikes,
-      hasReview,
-      isScoringPlay,
-      awayScore,
-      homeScore,
-      event,
-      eventType,
-      battingOrder,
-      abbreviation positionAbbrev,
-      injuryType,
-      description
-    FROM stg_play_action
-  )
 SELECT
   gamePk,
   atBatIndex,
-  playIndex,
+  `index` playIndex,
   playerId,
-  endOuts,
-  endBalls,
-  endStrikes,
+  outs AS endOuts,
+  balls AS endBalls,
+  strikes AS endStrikes,
   hasReview,
   isScoringPlay,
   awayScore,
@@ -1100,10 +884,10 @@ SELECT
   event,
   eventType,
   battingOrder,
-  positionAbbrev,
+  abbreviation positionAbbrev,
   injuryType,
   description
-FROM d
+FROM stg_play_action
 WHERE
   1 = 1
   AND (gamePk, atBatIndex) NOT IN (
@@ -1280,30 +1064,17 @@ INSERT INTO pickoffs(
     hasReview,
     baseCode
   )
-  WITH d AS (
-    SELECT
-      gamePk,
-      atBatIndex,
-      `index` playIndex,
-      outs,
-      balls,
-      strikes,
-      fromCatcher,
-      hasReview,
-      code baseCode
-    FROM stg_play_pickoff
-  )
 SELECT
   gamePk,
   atBatIndex,
-  playIndex,
+  `index` playIndex,
   outs,
   balls,
   strikes,
   fromCatcher,
   hasReview,
-  baseCode
-FROM d
+  code baseCode
+FROM stg_play_pickoff
 WHERE
   1 = 1
   AND (gamePk, atBatIndex) NOT IN (
