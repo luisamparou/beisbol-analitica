@@ -2,6 +2,7 @@ USE baseball;
 
 DROP TABLE rem_play_by_play;
 DROP TABLE rem_run_expectancy_matrix;
+DROP TABLE rem_event_run_value;
 
 CREATE TABLE IF NOT EXISTS rem_play_by_play (
   majorLeagueId INTEGER,

@@ -1,6 +1,6 @@
 USE baseball;
 
-DROP PROCEDURE master_procedure();
+DROP PROCEDURE master_procedure;
 
 DELIMITER //
 
@@ -31,4 +31,4 @@ CALL rem_event_run_value();
 
 END //
 
-DELIMITER;
+DELIMITER ;
