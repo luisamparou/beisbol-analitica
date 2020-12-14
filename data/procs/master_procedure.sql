@@ -13,7 +13,6 @@ CALL players();
 CALL game_player_batting_stats();
 CALL game_player_fielding_stats();
 CALL game_player_pitching_stats();
-CALL game_batting_orders();
 CALL teams();
 CALL game_player_positions();
 CALL atbats();
