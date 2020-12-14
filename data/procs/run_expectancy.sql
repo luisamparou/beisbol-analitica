@@ -431,6 +431,7 @@ rem_play_by_play_events AS (
     END event
   FROM rem_play_by_play
 ),
+/* Calcular run expectancies al inicio, durante y final de jugada */
 run_expectancies AS (
   SELECT
     rpbp.majorLeagueId,
