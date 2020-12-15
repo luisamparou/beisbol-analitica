@@ -148,7 +148,7 @@ outs_at_beginning_of_play AS (
     atBatIndex,
     playIndex,
     event,
-    COALESCE(MAX(outNumber), 0) outsBeforePlay
+    MAX(outNumber) outsBeforePlay
   FROM runner_movements
   GROUP BY
     1, 2, 3, 4, 5, 6
@@ -177,8 +177,8 @@ outs_and_runs_in_play AS (
     atBatIndex,
     playIndex,
     event,
-    COALESCE(SUM(isOut), 0) outsInPlay,
-    COALESCE(SUM(runScored), 0) runsScoredInPlay
+    SUM(isOut) outsInPlay,
+    SUM(runScored) runsScoredInPlay
   FROM game_runners
   GROUP BY
     1, 2, 3, 4, 5, 6
@@ -189,7 +189,7 @@ outs_and_runs_end_inning AS (
     gamePk,
     inning,
     halfInning,
-    COALESCE(SUM(runScored), 0) runsScoredEndInning
+    SUM(runScored) runsScoredEndInning
   FROM game_runners
   GROUP BY
     1, 2, 3
@@ -205,13 +205,13 @@ SELECT
   rb.playIndex,
   rb.event,
   rb.runnersBeforePlay,
-  rrb.runsScoredBeforePlay,
-  ob.outsBeforePlay,
-  ori.runsScoredInPlay,
-  ori.outsInPlay,
-  ore.runsScoredEndInning - rrb.runsScoredBeforePlay runsScoredAfterPlay,
-  ob.outsBeforePlay + ori.outsInPlay outsAfterPlay,
-  ore.runsScoredEndInning
+  COALESCE(rrb.runsScoredBeforePlay,0) runsScoredBeforePlay,
+  COALESCE(ob.outsBeforePlay, 0) outsBeforePlay,
+  COALESCE(ori.runsScoredInPlay, 0 ) runsScoredInPlay,
+  COALESCE(ori.outsInPlay, 0 ) outsInPlay,
+  COALESCE(ore.runsScoredEndInning, 0 ) - COALESCE(rrb.runsScoredBeforePlay, 0 ) runsScoredAfterPlay,
+  COALESCE(ob.outsBeforePlay, 0 ) + COALESCE(ori.outsInPlay,0) outsAfterPlay,
+  COALESCE(ore.runsScoredEndInning, 0 ) runsScoredEndInning
 FROM runners_at_beginning_of_play rb
 LEFT JOIN outs_at_beginning_of_play ob
   ON rb.gamePk = ob.gamePk
@@ -412,10 +412,11 @@ rem_play_by_play_events AS (
       WHEN event IN ('Bunt Groundout', 'Bunt Lineout', 'Bunt Pop Out') THEN 'Bunt'
       WHEN event IN ('Field Error', 'Error') THEN 'Error'
       WHEN event IN ('Sac Fly Double Play') THEN 'Sac Fly'
-      WHEN event IN ('Strikeout Double Play') THEN 'Strikeout'
-      WHEN event IN ('Grounded Into DP') THEN 'Double Play'
+      WHEN event IN ('Strikeout Double Play', 'Strikeout Triple Play') THEN 'Strikeout'
+      WHEN event IN ('Grounded Into DP', 'Runner Double Play') THEN 'Double Play'
       WHEN event IN ('Pickoff Caught Stealing 2B') THEN 'Caught Stealing 2B'
       WHEN event IN ('Pickoff Caught Stealing 3B') THEN 'Caught Stealing 3B'
+      When event In ('Pickoff Caught Stealing Home') THEN 'Caught Stealing Home'
       WHEN event IN ('Sac Bunt Double Play') THEN 'Sac Bunt'
       WHEN event IN (
         'Field Out',
