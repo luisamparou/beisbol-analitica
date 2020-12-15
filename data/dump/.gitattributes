@@ -1,2 +1,0 @@
-*.sql filter=lfs diff=lfs merge=lfs -text
-dump.sql filter=lfs diff=lfs merge=lfs -text
