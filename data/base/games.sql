@@ -1,0 +1,101 @@
+USE baseball;
+
+DROP PROCEDURE games;
+
+DELIMITER //
+
+CREATE PROCEDURE games()
+BEGIN
+
+INSERT INTO games(
+    gamePk,
+    gameType,
+    seasonId,
+    gameDate,
+    isTie,
+    gameNumber,
+    doubleHeader,
+    dayNight,
+    scheduledInnings,
+    gamesInSeries,
+    seriesDescription,
+    ifNecessaryDescription,
+    gameId,
+    abstractGameState,
+    codedGameState,
+    detailedState,
+    awayWins,
+    awayLosses,
+    awayPct,
+    awayScore,
+    awayTeamId,
+    awayIsWinner,
+    homeWins,
+    homeLosses,
+    homePct,
+    homeScore,
+    homeTeamId,
+    homeIsWinner,
+    venueId,
+    homeTeamName,
+    awayTeamName,
+    venueName,
+    majorLeague,
+    majorLeagueId,
+    gameType2
+  )
+    SELECT
+      gamePk,
+      gameType,
+      season AS seasonId,
+      str_to_date(SUBSTR(gameDate, 1, 10), '%Y-%m-%d') gameDate,
+      isTie,
+      gameNumber,
+      doubleHeader,
+      dayNight,
+      scheduledInnings,
+      gamesInSeries,
+      seriesDescription,
+      ifNecessaryDescription,
+      gameId,
+      abstractGameState,
+      codedGameState,
+      detailedState,
+      awayWins,
+      awayLosses,
+      awayPct,
+      awayScore,
+      awayId AS awayTeamId,
+      awayIsWinner,
+      homeWins,
+      homeLosses,
+      homePct,
+      homeScore,
+      homeId AS homeTeamId,
+      homeIsWinner,
+      venueId,
+      homeName homeTeamName,
+      awayName awayTeamName,
+      venueName,
+      majorLeague,
+      majorLeagueId,
+      CASE
+        WHEN gameType IN ('F', 'D', 'L', 'W') THEN 'PS'
+        WHEN gameType = 'R' THEN 'RS'
+        ELSE gameType
+      END gameType2
+    FROM stg_game_context
+WHERE
+  1 = 1
+  AND gamePk NOT IN (
+    SELECT
+      gamePk
+    FROM games
+  )
+  AND gamePk IS NOT NULL;
+
+COMMIT;
+
+END //
+
+DELIMITER ;
