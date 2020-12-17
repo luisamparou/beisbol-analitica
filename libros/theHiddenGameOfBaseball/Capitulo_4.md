@@ -1,9 +1,9 @@
 # Capítulo 4
 Traducido por Miguel Corona ( @bretanic en Twitter y Github )
 
-## La Ponderación Lineal asigna un valor de carrera a los diferentes eventos de Ofensiva
+## La Ponderación Lineal
 
-En esencia, la base es la misma para la fórmula Rickey y la mayoría de las nuevas estadísticas desde entonces: que las victorias y derrotas es de lo que se trata el juego; que las victorias y carreras en turno son proporcionales a los eventos que las generan.
+La Ponderación Lineal asigna un valor de carrera a los diferentes eventos de Ofensiva. En esencia, la base es la misma para la fórmula Rickey y la mayoría de las nuevas estadísticas desde entonces: que las victorias y derrotas es de lo que se trata el juego; que las victorias y carreras en turno son proporcionales a los eventos que las generan.
 
 Con la ponderación lineal, estos eventos no se expresan en los índices más comunes y ambiguos (desde hits a turnos al bat, desde victorias a decisiones, etc.) sino en carreras contribuidas (bateo, robo) o evitadas (Pitcheo, fildeo). Los factores para normalizar (el promedio de la liga) incluidos en las fórmulas para todos estos índices, excepto el robo, en el que el promedio de la liga no es una fuerza definitoria, nos permiten computar el número de carreras provistas el año anterior que son extra a las que un hitter promedio pudo haber producido en un número equivalente de apariciones a la caja de bateo. Y, al hacer ajustes considerando la influencia de la localía, la comparación de ponderaciones lineales puede extenderse a cuántas carreras se acreditan, más allá de las que un jugador promedio pudo haber producido en el mismo número de turnos al bat haya tenido en la mitad de sus juegos, en un estadio específico.
 Habiendo determinado el número de carreras necesarias para transformar una derrota en una victoria en las estadísticas finales, podemos convertir el record de ponderaciones lineales de un jugador, expresado en carreras, al número de victorias arriba del promedio que contribuyó el solo. Por último, al revisar las contribuciones de todos los bateadores, pitchers, jardineros y roba bases del equipo, podemos establecer un cálculo sólido de las fortalezas y debilidades de ese equipo para la siguiente temporada incluso si, por ejemplo, pareciera ser un fuerte contendiente sin cambios en su plantilla o si, por el contrario tuviera que importar nuevos jugadores para mantenerse.
@@ -13,7 +13,7 @@ Los valores de las ponderaciones lineales son determinados en términos del núm
 
 Las bases robadas y los robos evitados no son parte de la fórmula de ponderación lineal debido a su naturaleza electiva, a su dependencia de la situación: Estos intentos suelen ocurrir con mayor frecuencia en juegos reñidos, en los que pueden ser más valiosos que si se distribuyeran aleatoriamente, de la misma manera que lo hacen los sencillos o los home runs.
 
-## La fórmula
+## La Fórmula
 
 Así como estos valores de carrera cambian marginalmente de acuerdo a las condiciones cambiantes de juego, también difieren ligeramente de acuerdo al orden al bat (un home run no vale tanto si lo hace el primero al bat como si lo hace el quinto; una base por bolas vale más para el segundo al bat que para el octavo); sin embargo, estas diferencias ya han sido consideradas.
 
@@ -32,7 +32,7 @@ La ponderación lineal tiene una “estadística sombra”: OPS (Lllegadas a bas
 
 Sin embargo, como un promedio o tasa, el OPS mide el éxito de bateo (eficiencia), mientras que la ponderación lineal mide la cantidad de éxito. Claramente, la longevidad o la cantidad de producción no son menos importantes que la tasa de producción. La ponderación lineal tiene incluida un factor normalizante.
 
-## Carreras y victorias
+## Carreras y Victorias
 
 Debido a que el OPS no está expresado en carreras, es menos versátil que la ponderación lineal. Así como las carreras son proporcionales a los eventos que las generan, estas son proporcionales a las victorias y derrotas. Bill James, en el Abstracto de Baseball, desarrolló el porcentaje de victorias como R^2 / (R^2 / RA^2).
 
@@ -40,10 +40,10 @@ Debido a que el OPS no está expresado en carreras, es menos versátil que la po
 
 Al igual que la ponderación lineal puede mostrar que un bateador sobresaliente haya contribuido más allá de las carreras y victorias promedio de su equipo, también puede mostrar cómo los bateadores abajo del promedio tienen marcas negativas, que se obtienen cuando la pérdida de carreras por medio de outs excede las carreras ganadas por medio de las llegadas a base.
 
-## Carreras con bases robadas
+## Carreras con Bases Robadas
 Se requiere de un desempeño fabuloso en robos para producir algo como una victoria extra para el equipo. El hecho es que, aunque la ganancia de una base robada es muy visible (una base extra que puede ser seguida por un hit que de otro modo no hubiera producido una carrera), el costo de un robo fallado es completamente invisible, o sujeto a conjeturas, si se recurre a la ayuda de las estadísticas.
 
 Lo que indica la ponderación lineal es que, en balance, y no en una base de casos específicos, la base robada es, como mucho, un método dudoso para incrementar la producción de carreras de un equipo.
 
-## Ponderación lineal en la práctica
+## Ponderación Lineal en la Práctica
 Teniendo fórmulas para pitcheo, atrapadas, avances a base y bateo, podemos evaluar la contribución al marcador de carreras de cada individuo que alguna vez haya jugado el juego y, en consecuencia, el número de victorias a las que ha contribuido en cualquier temporada o a lo largo de su carrera.
