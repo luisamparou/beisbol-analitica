@@ -1,5 +1,5 @@
 # Capítulo 4
-Traducido por Miguel Corona ( @bretanic en Twitter y Github )
+Traducido por Miguel Corona ( @bretanic en [Twitter](https://twitter.com/bretanic) y [Github](https://github.com/bretanic) )
 
 ## La Ponderación Lineal
 
