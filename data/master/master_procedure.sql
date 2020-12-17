@@ -7,6 +7,7 @@ DELIMITER //
 CREATE PROCEDURE master_procedure()
 BEGIN
 
+-- Base
 CALL batting_orders();
 CALL games();
 CALL players();
@@ -21,12 +22,14 @@ CALL runners();
 CALL fielding_credits();
 CALL actions();
 CALL pickoffs();
-CALL clean_staging_tables();
 
 -- Run Expectancy
 CALL rem_play_by_play();
 CALL rem_run_expectancy_matrix();
 CALL rem_event_run_value();
+
+-- Clean Staging Tables
+CALL clean_staging_tables();
 
 END //
 
