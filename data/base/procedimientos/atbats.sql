@@ -78,29 +78,6 @@ INNER JOIN (
   Where 1 = 1
   And   ( pitchingTeamId Is Null Or battingTeamId Is Null );
 
--- Probablemente esto este mal. Utilizar runners.
-UPDATE
-  atbats a
-LEFT JOIN (
-  SELECT
-    gamePk,
-    atBatIndex,
-    inning,
-    halfInning,
-    endOuts
-  FROM atbats
-) a2
-  ON (
-    a.gamePk = a2.gamePk
-    AND a.inning = a2.inning
-    AND a.halfInning = a2.halfInning
-    AND a.atBatIndex - 1 = a2.atBatIndex
-  )
-  SET a.startouts = Coalesce( a2.endOuts, 0 )
-  Where 1 = 1
-  And a.startOuts Is Null
-;
-
 COMMIT;
 
 END //
