@@ -1,5 +1,5 @@
 # Capítulo 5
-Traducido por Luis Amparou en @ luisamparou [Twitter](https://twitter.com/luisamparou) y  [Github](https://github.com/luisamparou) )
+Traducido por Luis Amparou( @luisamparou [Twitter](https://twitter.com/luisamparou) y  [Github](https://github.com/luisamparou) )
 
 Se espera que cada equipo gane más partidos en la casa que en la ruta, al punto de que si solo ganan la mitad de sus partidos en la ruta se considere que tienen una chance de alzarse con el banderín.
 
