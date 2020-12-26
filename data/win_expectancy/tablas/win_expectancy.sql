@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS we_win_expectancy (
   runnersBeforePlay VARCHAR(3),
   outsBeforePlay INTEGER,
   battingTeamScore INTEGER,
-  win_expectancy INTEGER
+  win_expectancy DOUBLE
 );
 
 ALTER TABLE we_win_expectancy ADD INDEX(majorLeagueId, seasonId);
