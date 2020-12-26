@@ -25,8 +25,10 @@ En vez de intentar asignar un valor numérico a cada una de las seis (o más) va
 Para medir el impacto del estadio, Pete no solo tiene en cuenta las carreras hechas por el equipo de casa, las cuales pudieron haber sido producidas tomando ventaja de las peculiaridades del estadio, sino también las anotadas por los equipos visitantes. Al tomar el total de las carreras producidas por todos los equipos en un año y dividiendo ese número entre las carreras permitidas por los equipos en la ruta, se tiene el primer paso para determinar el Park Factor, o Factor Parque que podría ser aplicado a bateadores y lanzadores de un equipo (también podría aplicarse a ladrones de base, etc).
 
 Para la mayoría de nosotros, sin embargo, será suficiente entender que el Factor Parque consiste en la proporción casa-ruta de carreras permitidas del equipo, comparándola con la proporción casa-ruta de carreras permitidas de la liga, para así saber si está por encima del promedio. El batter adjustment factor (factor de ajuste para el bateador, en español), o Batter Park Factor (BPF) (Factor Parque del Bateador, en español) consiste en:
-	•	El Park Factor.
-	•	Un ajuste debido a que el bateador no tiene que enfrentar a los lanzadores que pertenecen a su equipo.
+
+* El Park Factor.
+* Un ajuste debido a que el bateador no tiene que enfrentar a los lanzadores que pertenecen a su equipo.
+
 El pitcher adjustment factor (factor de ajuste para el lanzador, en español), o Pitcher Park Factor (PPF) (Factor Parque del Lanzador, en español), igualmente, consiste en el Factor Parque y un ajuste debido a que el lanzador no tiene que enfrentar a los bateadores que son sus compañeros de equipo. El BPF y el PPF se expresan en relación al Factor Parque de su estadio, que es, matemáticamente, 1.00. Un estadio en el que se anote 5% más que un estadio promedio tendrá 1.05 de BPF, mientras que el PPF para el mismo estadio podría ser 1.04 o 1.00 debido a que el ajuste se hace de maneras distintas.
 
 Un estadio que tenga características “extremas” (es decir, que favorezca a lanzadores o bateadores, a derechos o a zurdos) puede ser un problema. En Fenway, los equipos visitantes casi nunca colocan a un lanzador zurdo a abrir partidos, debido a que los Red Sox históricamente llenan su alineación de derechos que puedan conectar la bola 350 pies a su banda sobre el Monstruo Verde.
