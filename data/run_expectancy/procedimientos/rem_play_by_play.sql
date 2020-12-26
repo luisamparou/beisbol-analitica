@@ -32,7 +32,7 @@ game_runners AS (
     g.majorLeagueId,
     g.seasonId,
     g.venueId,
-    r.gamePk,
+    g.gamePk,
     r.inning,
     r.halfInning,
     r.atBatIndex,
@@ -50,22 +50,12 @@ game_runners AS (
   FROM games g
   INNER JOIN runners r
     ON g.gamePk = r.gamePk
-    AND (
-      g.scheduledInnings > r.inning
-      OR (
-        g.scheduledInnings = r.inning
-        AND r.halfInning = 'top'
-      )
-    )
-  WHERE
-    1 = 1
-    AND g.gamePk NOT IN (
+  WHERE g.gamePk NOT IN (
       SELECT
         gamePk
       FROM rem_play_by_play
     )
     AND g.gameType2 = 'RS'
-
 ),
 /* Obtener movimiento de jugadores a lo largo del inning y hasta cierto punto( atBatIndex,playIndex) */
 runner_movements AS (
@@ -150,7 +140,7 @@ outs_at_beginning_of_play AS (
   GROUP BY
     1, 2, 3, 4, 5, 6
 ),
-/* Obtener corredores antes de la jugada*/
+/* Obtener corredores antes de la jugada */
 runs_at_beginning_of_play AS (
   SELECT
     gamePk,
@@ -236,6 +226,7 @@ INNER JOIN outs_and_runs_end_inning ore
   AND rb.inning = ore.inning
   AND rb.halfInning = ore.halfInning;
 
+/* Actualizar Runners After Play */
 UPDATE
   rem_play_by_play pbp
 INNER JOIN (
@@ -272,9 +263,8 @@ INNER JOIN (
       FROM rem_play_by_play n
       WHERE
         runnersAfterPlay IS NULL
-    ),
+    )
       /* Obtener corredores iniciales de la siguiente jugada. */
-      runners_after_play AS (
       SELECT
         rnp.gamePk,
         rnp.inning,
@@ -286,14 +276,11 @@ INNER JOIN (
       LEFT JOIN rem_play_by_play pbp
         ON rnp.gamePk = pbp.gamePk
         AND rnp.inning = pbp.inning
-        AND rnp.halfInning = pbp.halfInning /* Si no hay playIndex2, significa que la jugada se dio en el siguiente atbat.
+        AND rnp.halfInning = pbp.halfInning
+        /* Si no hay playIndex2, significa que la jugada se dio en el siguiente atbat.
            Si hay playIndex2, significa que la jugada se dio en el mismo atbat. */
         AND IF(rnp.playIndex2 IS NOT NULL, rnp.atBatIndex, rnp.atBatIndex2) = pbp.atBatIndex
         AND IF(rnp.playIndex2 IS NOT NULL, rnp.playIndex2, rnp.playIndex3) = pbp.playIndex
-    )
-    SELECT
-      *
-    FROM runners_after_play
   ) rap
   ON pbp.gamePk = rap.gamePk
   AND pbp.inning = rap.inning
@@ -301,6 +288,60 @@ INNER JOIN (
   AND pbp.atBatIndex = rap.atBatIndex
   AND pbp.playIndex = rap.playIndex
   SET pbp.runnersAfterPlay = rap.runnersAfterPlay;
+
+/* Actualizar battingTeamId, pitchingTeamId, batterId, pitcherId */
+UPDATE rem_play_by_play pbp
+INNER JOIN atbats ab
+ON pbp.gamePk = ab.gamePk
+AND pbp.atbatIndex = ab.atBatIndex
+SET pbp.battingTeamId = ab.battingTeamId
+,   pbp.pitchingTeamId = ab.pitchingTeamId
+,   pbp.batterId = ab.batterId
+,   pbp.pitcherId = ab.pitcherId;
+
+/* Actualizar scheduledInnings, battingTeamScoreEndGame,  pitchingTeamScoreEndGame */
+UPDATE
+  rem_play_by_play pbp
+INNER JOIN games g
+ON pbp.gamePk = g.gamePk
+SET pbp.scheduledInnings = g.scheduledInnings
+,   pbp.battingTeamScoreEndGame  = IF( pbp.battingTeamId = homeTeamId, homeScore, awayScore )
+,   pbp.pitchingTeamScoreEndGame = IF( pbp.pitchingTeamId = homeTeamId, homeScore, awayScore );
+
+/* Actualizar score en cada momento del juegp( battingTeamScoreStartInning, pitchingTeamScoreStartInning )*/
+UPDATE
+  rem_play_by_play pbp
+INNER JOIN (
+With runs_scored_per_inning As
+(
+Select Distinct gamePk, inning, atBatIndex, playIndex, runsScoredInPlay, battingTeamId, pitchingTeamId
+From rem_play_by_play
+)
+Select n.gamePk, n.atBatIndex, n.playIndex, runsScoredInPlay, (
+Select Sum(runsScoredInPlay )
+From runs_scored_per_inning b
+Where  n.gamePk = b.gamePk
+And n.battingTeamId = b.battingTeamId
+And ( n.atBatIndex > b.atBatIndex
+Or  ( n.atBatIndex = b.atBatIndex
+    And n.playIndex  > b.playIndex
+    )
+) ) battingTeamScore,
+(
+Select Sum(runsScoredInPlay )
+From runs_scored_per_inning p
+Where  n.gamePk = p.gamePk
+And n.pitchingTeamId = p.battingTeamId
+And n.atBatIndex > p.atBatIndex
+) pitchingTeamScore
+From rem_play_by_play n
+
+) rsi
+ON pbp.gamePk = rsi.gamePk
+AND pbp.atBatIndex = rsi.atBatIndex
+AND pbp.playIndex = rsi.playIndex
+SET pbp.battingTeamScore = Coalesce( rsi.battingTeamScore,0)
+,   pbp.pitchingTeamScore = Coalesce( rsi.pitchingTeamScore,0);
 
 COMMIT;
 

@@ -31,6 +31,13 @@ WITH run_expectancy_matrix AS (
         seasonId
       FROM rem_run_expectancy_matrix
     )
+  AND (
+      scheduledInnings > inning
+      OR (
+        scheduledInnings = inning
+        AND halfInning = 'top'
+      )
+    )
   GROUP BY
     1, 2, 3, 4
 )

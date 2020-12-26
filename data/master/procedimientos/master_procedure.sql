@@ -28,6 +28,9 @@ CALL rem_play_by_play();
 CALL rem_run_expectancy_matrix();
 CALL rem_event_run_value();
 
+-- Win Expectancy
+CALL we_win_expectancy();
+
 -- Clean Staging Tables
 CALL clean_staging_tables();
 
